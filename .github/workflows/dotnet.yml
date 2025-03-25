@@ -1,7 +1,7 @@
-# This workflow will build a .NET project
+# This workflow will build a .NET project using .NET 9 SDK
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: .NET
+name: .NET Build and Test
 
 on:
   push:
@@ -13,14 +13,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Steg 1: Checka ut kod från GitHub-repo
     - uses: actions/checkout@v3
+
+    # Steg 2: Ställ in .NET 9 SDK
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: '9.0'  # Uppdatera till .NET 9
+
+    # Steg 3: Återställ beroenden
     - name: Restore dependencies
       run: dotnet restore
+
+    # Steg 4: Bygg projektet
     - name: Build
       run: dotnet build --no-restore
+
+    # Steg 5: Kör tester
     - name: Test
       run: dotnet test --no-build --verbosity normal
