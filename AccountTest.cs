@@ -1,79 +1,75 @@
-using Xunit;                              
-using banko;                              
+using Xunit;
+using banko;
 
-namespace BankomatUnitTests             
+// Definierar namespace för tester av Account.
+namespace BankomatUnitTests
 {
     // ====================================================
-    // Testklass för Account
+    // Testklass för Account.
+    // Syfte: Kontrollera att uttagslogiken i Account fungerar korrekt.
     // ====================================================
     public class AccountTest
     {
         // ----------------------------------------------------
-        // Test: Withdraw() med ett giltigt belopp
-        // Detta test säkerställer att ett korrekt uttag drar bort rätt belopp från saldot.
+        // Test: Withdraw() med ett giltigt belopp.
+        // Instruktion: "Testa ett korrekt uttag, saldo minskar med rätt belopp."
         // ----------------------------------------------------
         [Fact]
         public void Withdraw_ValidAmount_ShouldDeductBalance()
         {
-            // Arrange: Skapar ett Account-objekt.
+            // Arrange: Skapa en Account-instans.
             Account account = new Account();
-            // Hämta initialbalans (ska vara 5000) för senare jämförelse.
+            // Arrange: Hämta initialbalansen, förväntas vara 5000.
             int initialBalance = account.getBalance();
-            // Definierar ett giltigt uttagsbelopp.
+            // Arrange: Definiera ett giltigt uttagsbelopp (2000).
             int amountToWithdraw = 2000;
-
             // Act: Utför uttaget.
             int withdrawn = account.withdraw(amountToWithdraw);
-            // Hämta det nya saldot efter uttag.
+            // Act: Hämta det nya saldot.
             int remainingBalance = account.getBalance();
-
-            // Assert: Kontrollera att det uttagna beloppet är korrekt.
+            // Assert: Det uttagna beloppet skall vara 2000.
             Assert.Equal(amountToWithdraw, withdrawn);
-            // Assert: Kontrollera att saldot minskat korrekt.
+            // Assert: Det nya saldot skall vara initialbalans minus uttaget.
             Assert.Equal(initialBalance - amountToWithdraw, remainingBalance);
         }
 
         // ----------------------------------------------------
-        // Test: Withdraw() med ett belopp över saldot
-        // Detta test säkerställer att inga medel tas ut om man försöker ta ut mer än vad som finns.
+        // Test: Withdraw() med ett belopp som överstiger saldot.
+        // Instruktion: "Uttag över saldo skall misslyckas och lämna saldot oförändrat."
         // ----------------------------------------------------
         [Fact]
         public void Withdraw_ExcessAmount_ShouldReturnZeroAndNotChangeBalance()
         {
-            // Arrange: Skapar ett nytt Account-objekt.
+            // Arrange: Skapa ett nytt Account.
             Account account = new Account();
-            // Försöker ta ut ett belopp som överstiger det initiala saldot (6000 > 5000).
+            // Arrange: Definiera ett uttagsbelopp som överstiger saldot (6000).
             int amountToWithdraw = 6000;
-
-            // Act: Försöker genomföra uttaget.
+            // Act: Försök att ta ut beloppet.
             int withdrawn = account.withdraw(amountToWithdraw);
-            // Hämta saldot efter försöket.
+            // Act: Hämta saldot efter uttagsförsöket.
             int balanceAfter = account.getBalance();
-
-            // Assert: Förväntar att inget belopp tas ut (returnerar 0).
+            // Assert: Uttaget skall returnera 0.
             Assert.Equal(0, withdrawn);
-            // Assert: Saldo ska förbli 5000.
+            // Assert: Saldo skall förbli oförändrat (5000).
             Assert.Equal(5000, balanceAfter);
         }
 
         // ----------------------------------------------------
-        // Test: Withdraw() med ett negativt belopp
-        // Bekräftar att uttag med negativa värden inte påverkar kontot.
+        // Test: Withdraw() med ett negativt belopp.
+        // Instruktion: "Negativa uttag skall ej genomföras och saldo skall förbli detsamma."
         // ----------------------------------------------------
         [Fact]
         public void Withdraw_NegativeAmount_ShouldReturnZeroAndNotChangeBalance()
         {
-            // Arrange: Skapar ett nytt Account-objekt.
+            // Arrange: Skapa en Account-instans.
             Account account = new Account();
-
-            // Act: Försöker att ta ut ett negativt belopp (-100).
+            // Act: Försök att ta ut ett negativt belopp (-100).
             int withdrawn = account.withdraw(-100);
-            // Hämta saldot efter uttagsförsöket.
+            // Act: Hämta saldot efter uttagsförsöket.
             int balanceAfter = account.getBalance();
-
-            // Assert: Uttaget ska returnera 0.
+            // Assert: Uttaget skall returnera 0.
             Assert.Equal(0, withdrawn);
-            // Assert: Saldo ska förbli oförändrat (5000).
+            // Assert: Saldo skall fortfarande vara 5000.
             Assert.Equal(5000, balanceAfter);
         }
     }
