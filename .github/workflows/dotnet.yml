@@ -1,35 +1,40 @@
-# This workflow will build a .NET project using .NET 9 SDK
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
+# Denna workflow kör enhetstester för ett .NET-projekt
 name: .NET Build and Test
 
+# Trigger: Workflowen körs när du pushar till eller gör en PR till "main" (du kan lägga till fler brancher om önskas)
 on:
   push:
-    branches: [ "deploy", "main" ]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
 
+    # Ange vilken miljö workflowen ska köras på, t.ex. "ubuntu-latest"
     runs-on: ubuntu-latest
 
     steps:
-    # Steg 1: Checka ut kod från GitHub-repo
-    - uses: actions/checkout@v3
+      # Steg 1: Checka ut koden från ditt repository
+      - name: Check out repository code
+        uses: actions/checkout@v3
 
-    # Steg 2: Ställ in .NET 9 SDK
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '9.0'  # Uppdatera till .NET 9
+      # Steg 2: Installera rätt version av .NET SDK (exempelvis .NET 9.0)
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0'  # Ändra versionen beroende på ditt projekt
 
-    # Steg 3: Återställ beroenden
-    - name: Restore dependencies
-      run: dotnet restore
+      # Steg 3: Återställ beroenden
+      - name: Restore dependencies
+        run: dotnet restore
 
-    # Steg 4: Bygg projektet
-    - name: Build
-      run: dotnet build --no-restore
+      # Steg 4: Bygg projektet (utan att återställa igen)
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
 
-    # Steg 5: Kör tester
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      # Steg 5: Kör unit testing med högre detaljeringsgrad (verbosity normal)
+      - name: Run unit tests
+        run: dotnet test --configuration Release --no-build --verbosity normal
